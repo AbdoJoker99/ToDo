@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/model/task.dart';
 
 class EditTask extends StatefulWidget {
-  const EditTask({super.key});
+  const EditTask({super.key, required Task task});
 
   @override
   State<EditTask> createState() => _EditTaskState();

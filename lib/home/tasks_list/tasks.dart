@@ -1,18 +1,31 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/app_colors.dart';
 import 'package:todo/home/tasks_list/task_list_item.dart';
+import 'package:todo/providers/listprovider.dart';
 
-class Tasks extends StatelessWidget {
+class Tasks extends StatefulWidget {
+  @override
+  State<Tasks> createState() => _TasksState();
+}
+
+class _TasksState extends State<Tasks> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    var listprovider = Provider.of<ListProvider>(context);
+    if (listprovider.tasksList.isEmpty) {
+      listprovider.getAllTasksFromFireStore();
+    }
     return Container(
       child: Column(
         children: [
           EasyDateTimeLine(
+            activeColor: AppColors.whiteColor,
             initialDate: DateTime.now(),
             onDateChange: (selectedDate) {
               //`selectedDate` the new date selected.
+              listprovider.changeDate(selectedDate);
             },
             headerProps: const EasyHeaderProps(
               monthPickerType: MonthPickerType.switcher,
@@ -28,7 +41,7 @@ class Tasks extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Color(0xff3371FF),
-                      Color(0xff8426D6),
+                      Color(0xECEEF3FF),
                     ],
                   ),
                 ),
@@ -36,12 +49,20 @@ class Tasks extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                return TaskListItemState();
-              },
-              itemCount: 20,
-            ),
+            child: listprovider.tasksList.isEmpty
+                ? Center(
+                    child: Text(
+                      "No task is added",
+                    ),
+                  )
+                : ListView.builder(
+                    itemBuilder: (context, index) {
+                      return TaskListItemState(
+                        task: listprovider.tasksList[index],
+                      );
+                    },
+                    itemCount: listprovider.tasksList.length,
+                  ),
           ),
         ],
       ),

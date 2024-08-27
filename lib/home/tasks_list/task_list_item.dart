@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/firbase_utils.dart';
+import 'package:todo/providers/listprovider.dart';
 
 import '../../app_colors.dart';
+import '../../dialog_utils.dart';
+import '../../model/task.dart';
 import 'edit_task.dart';
 
 class TaskListItemState extends StatefulWidget {
+  Task task;
+
+  TaskListItemState({required this.task});
+
   @override
   State<TaskListItemState> createState() => TaskListItemStateState();
 }
@@ -14,6 +24,7 @@ class TaskListItemStateState extends State<TaskListItemState> {
 
   @override
   Widget build(BuildContext context) {
+    var listProvider = Provider.of<ListProvider>(context);
     return Container(
       margin: EdgeInsets.all(10),
       child: Slidable(
@@ -31,11 +42,20 @@ class TaskListItemStateState extends State<TaskListItemState> {
           children: [
             // A SlidableAction can have an icon and/or a label.
             SlidableAction(
-              onPressed: null,
+              onPressed: (context) {
+                // Delete task logic here
+                FirebaseUtils.deleteTaskFromFireStore(widget.task)
+                    .timeout(Duration(seconds: 1), onTimeout: () {
+                  DialogUtils.showMessage(
+                      context: context, content: 'task is deleted');
+                  print("task is deleted");
+                  listProvider.getAllTasksFromFireStore();
+                });
+              },
               backgroundColor: Color(0xFFFE4A49),
               foregroundColor: Colors.white,
               icon: Icons.delete,
-              label: 'Delete',
+              label: AppLocalizations.of(context)!.delete,
             ),
             SlidableAction(
               onPressed: (context) {
@@ -43,43 +63,20 @@ class TaskListItemStateState extends State<TaskListItemState> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        EditTask(), // Assuming EditTaskScreen is your edit screen
+                    builder: (context) => EditTask(
+                      task: widget
+                          .task, // Assuming EditTaskScreen is your edit screen
+                    ),
                   ),
                 );
               },
               backgroundColor: Color(0xFF21B7CA),
               foregroundColor: Colors.white,
               icon: Icons.edit,
-              label: 'edit',
+              label: AppLocalizations.of(context)!.edit,
             ),
           ],
         ),
-
-        // The end action pane is the one at the right or the bottom side.
-        endActionPane: ActionPane(
-          motion: ScrollMotion(),
-          children: [
-            SlidableAction(
-              // An action can be bigger than the others.
-              flex: 2,
-              onPressed: doNothing,
-              backgroundColor: Color(0xFF7BC043),
-              foregroundColor: Colors.white,
-              icon: Icons.archive,
-              label: 'Archive',
-            ),
-            SlidableAction(
-              onPressed: doNothing,
-              backgroundColor: Color(0xFF0392CF),
-              foregroundColor: Colors.white,
-              icon: Icons.save,
-              label: 'Save',
-            ),
-          ],
-        ),
-
-        // The child of the Slidable is what the user sees when the
         // component is not dragged.
         child: Container(
           margin: EdgeInsets.all(10),
@@ -104,14 +101,14 @@ class TaskListItemStateState extends State<TaskListItemState> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      "title",
+                      widget.task.title,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: _isCompleted
                               ? AppColors.greenColor
                               : AppColors.primaryColor),
                     ),
                     Text(
-                      "description",
+                      widget.task.description,
                       style: TextStyle(
                         color: AppColors.blackColor,
                       ),
@@ -129,11 +126,8 @@ class TaskListItemStateState extends State<TaskListItemState> {
                 ),
                 child: _isCompleted
                     ? Text(
-                        'Done!',
-                        style: TextStyle(
-                          color: AppColors.greenColor,
-                          fontSize: 30,
-                        ),
+                        AppLocalizations.of(context)!.done,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       )
                     : IconButton(
                         onPressed: () {
@@ -151,6 +145,4 @@ class TaskListItemStateState extends State<TaskListItemState> {
       ),
     );
   }
-
-  void doNothing(BuildContext context) {}
 }

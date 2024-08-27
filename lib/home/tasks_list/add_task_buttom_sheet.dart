@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/firbase_utils.dart';
+import 'package:todo/model/task.dart';
+import 'package:todo/providers/listprovider.dart';
+
+import '../../dialog_utils.dart';
 
 class AddTaskButtomSheet extends StatefulWidget {
   static final formKey = GlobalKey<FormState>();
+
+  const AddTaskButtomSheet({super.key});
 
   @override
   State<AddTaskButtomSheet> createState() => _AddTaskButtomSheetState();
@@ -16,10 +24,13 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
 
   var selectDate = DateTime.now();
 
+  late ListProvider listProvider;
+
   @override
   Widget build(BuildContext context) {
+    listProvider = Provider.of<ListProvider>(context);
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,9 +45,15 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(14.0),
+                    padding: EdgeInsets.all(14.0),
                     child: TextFormField(
-                      decoration: InputDecoration(hintText: 'Enter task title'),
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.title,
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(color: AppColors.blackColor),
+                      ),
                       validator: (text) {
                         if (text == null || text.isEmpty) {
                           return 'Please enter task title';
@@ -46,18 +63,23 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
                       onChanged: (text) {
                         titel = text;
                       },
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: AppColors.blackColor),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(14.0),
                     child: TextFormField(
-                      decoration:
-                          InputDecoration(hintText: 'Enter task description'),
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.details,
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(color: AppColors.blackColor),
+                      ),
                       maxLines: 4,
                       validator: (text) {
                         if (text == null || text.isEmpty) {
-                          return 'Please enter task title';
+                          return 'Please enter task descrip-tion';
                         }
                         return null;
                       },
@@ -102,7 +124,7 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
                 addTsk();
               },
               child: Text(
-                'Add',
+                AppLocalizations.of(context)!.add,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -113,7 +135,15 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
   }
 
   void addTsk() {
-    if (AddTaskButtomSheet.formKey.currentState?.validate() == true) {}
+    if (AddTaskButtomSheet.formKey.currentState?.validate() == true) {
+      Task task = Task(title: titel, description: disc, dateTime: selectDate);
+      FirebaseUtils.addTaskToFireStore(task).timeout(Duration(seconds: 1),
+          onTimeout: () {
+        DialogUtils.showMessage(context: context, content: 'Task  is added');
+        print("Task  is added");
+        listProvider.getAllTasksFromFireStore();
+      });
+    }
   }
 
   void ShowCelender() async {

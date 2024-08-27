@@ -12,5 +12,16 @@
   "select_date": "Select Date",
   "title": " This is Title",
   "changes": "Save Changes",
-  "details": "Task Details"
+  "details": "Task Details",
+  "delete": "Delete",
+  "edit": "edit",
+  "done": "Done",
+  "add": "add",
+  "login": "Login",
+  "email": "email",
+  "password": "password",
+  "create": "Or Create Account",
+  "account": "Create Account",
+  "confirm": "confirm password",
+  "name": "User Name"
 }
