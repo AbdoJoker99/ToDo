@@ -115,6 +115,7 @@ class _loginState extends State<Login> {
         DialogUtils.showMessage(
             context: context, content: 'login Successfully!');
         print("login  successfully");
+        DialogUtils.hideLoading(context);
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {

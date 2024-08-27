@@ -26,7 +26,7 @@ class DialogUtils {
   static void showMessage({
     required BuildContext context,
     required String content,
-    String title = "Title",
+    String title = "",
     String? posActionName,
     Function? posAction,
     String? negActionName,
