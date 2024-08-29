@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/firbase_utils.dart';
+import 'package:todo/model/my_user.dart';
 
 import '../../../dialog_utils.dart';
 import '../custom_text_form-field.dart';
@@ -128,18 +130,36 @@ class _SignupState extends State<Signup> {
           email: emailController.text,
           password: passwordController.text,
         );
+        MyUser myUser = MyUser(
+            email: emailController.text,
+            id: credential.user?.uid ?? '',
+            name: nameController.text);
+        print("before database");
+        await FirebaseUtils.adduserToFireStore(myUser);
+        print("after database");
+        DialogUtils.hideLoading(context);
         DialogUtils.showMessage(
             context: context, content: 'Register Successfully!');
         print("Register  successfully");
         print(credential.user?.uid ?? "");
+
+        // Navigate to the next screen
+        Navigator.pushReplacementNamed(context, '/next_screen');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
+          DialogUtils.showMessage(
+              context: context, content: 'The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
           print('The account already exists for that email.');
+          DialogUtils.showMessage(
+              context: context,
+              content: 'The account already exists for that email.');
         }
       } catch (e) {
         print(e);
+        DialogUtils.showMessage(
+            context: context, content: 'An error occurred. Please try again.');
       }
     }
   }

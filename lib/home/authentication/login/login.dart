@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/firbase_utils.dart';
 import 'package:todo/home/authentication/regestration/signUp.dart';
 import 'package:todo/home/home_screen.dart';
 
@@ -106,13 +107,17 @@ class _loginState extends State<Login> {
 
   void login() async {
     if (_formKey.currentState!.validate()) {
-      //DialogUtils.showLoading(context, "loading...");
+      DialogUtils.showLoading(context, "loading...");
       //TODO: Add your logic here
       try {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
-
+        var user = await FirebaseUtils.readUserFromFirestore(
+            credential.user?.uid ?? "");
+        if (user == null) {
+          return;
+        }
         print("login  successfully");
         DialogUtils.hideLoading(context);
         //   DialogUtils.showMessage(
