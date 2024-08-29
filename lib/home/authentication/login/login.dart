@@ -106,16 +106,17 @@ class _loginState extends State<Login> {
 
   void login() async {
     if (_formKey.currentState!.validate()) {
-      DialogUtils.showLoading(context, "loading...");
+      //DialogUtils.showLoading(context, "loading...");
       //TODO: Add your logic here
       try {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
-        DialogUtils.showMessage(
-            context: context, content: 'login Successfully!');
+
         print("login  successfully");
         DialogUtils.hideLoading(context);
+        //   DialogUtils.showMessage(
+        // context: context, content: 'login Successfully!');
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {

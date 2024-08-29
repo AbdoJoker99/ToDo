@@ -27,7 +27,7 @@ class Task {
       'id': id,
       'title': title,
       'description': description,
-      'dateTime': dateTime,
+      'dateTime': dateTime.millisecondsSinceEpoch,
       'isDone': isDone,
     };
   }
