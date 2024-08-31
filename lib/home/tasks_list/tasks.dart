@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
 import 'package:todo/home/tasks_list/task_list_item.dart';
 import 'package:todo/providers/listprovider.dart';
+import 'package:todo/providers/user_provider.dart';
 
 class Tasks extends StatefulWidget {
   @override
@@ -14,8 +15,9 @@ class _TasksState extends State<Tasks> {
   @override
   Widget build(BuildContext context) {
     var listprovider = Provider.of<ListProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
     if (listprovider.tasksList.isEmpty) {
-      listprovider.getAllTasksFromFireStore();
+      listprovider.getAllTasksFromFireStore(userProvider.currentUser!.id);
     }
     return Container(
       child: Column(
@@ -25,7 +27,8 @@ class _TasksState extends State<Tasks> {
             initialDate: DateTime.now(),
             onDateChange: (selectedDate) {
               //`selectedDate` the new date selected.
-              listprovider.changeDate(selectedDate);
+              listprovider.changeDate(
+                  selectedDate, userProvider.currentUser!.id);
             },
             headerProps: const EasyHeaderProps(
               monthPickerType: MonthPickerType.switcher,
@@ -57,7 +60,7 @@ class _TasksState extends State<Tasks> {
                   )
                 : ListView.builder(
                     itemBuilder: (context, index) {
-                      return TaskListItemState(
+                      return TaskListItem(
                         task: listprovider.tasksList[index],
                       );
                     },

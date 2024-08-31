@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/home/authentication/login/login.dart';
 import 'package:todo/home/tasks_list/add_task_buttom_sheet.dart';
 import 'package:todo/home/tasks_list/tasks.dart';
 
+import '../providers/listprovider.dart';
+import '../providers/user_provider.dart';
 import 'settings/settings.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var listprovider = Provider.of<ListProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 120, // Reduced toolbar height
@@ -25,6 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
           AppLocalizations.of(context)!.app_title,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                listprovider.tasksList = [];
+                Navigator.of(context).pushReplacementNamed(Login.routeName);
+              },
+              icon: Icon(Icons.logout)) // IconButton
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 0,

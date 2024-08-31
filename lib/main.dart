@@ -6,6 +6,7 @@ import 'package:todo/home/home_screen.dart';
 import 'package:todo/my_theme_data.dart';
 import 'package:todo/providers/app_config_provider.dart';
 import 'package:todo/providers/listprovider.dart';
+import 'package:todo/providers/user_provider.dart';
 
 import 'home/authentication/login/login.dart';
 import 'home/authentication/regestration/signUp.dart';
@@ -24,6 +25,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => ListProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => UserProvider(),
       ),
     ],
     child: MyApp(),

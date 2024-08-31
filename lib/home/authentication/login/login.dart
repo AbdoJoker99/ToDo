@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
 import 'package:todo/firbase_utils.dart';
 import 'package:todo/home/authentication/regestration/signUp.dart';
 import 'package:todo/home/home_screen.dart';
 
 import '../../../dialog_utils.dart';
+import '../../../providers/user_provider.dart';
 import '../custom_text_form-field.dart';
 
 class Login extends StatefulWidget {
@@ -118,6 +120,8 @@ class _loginState extends State<Login> {
         if (user == null) {
           return;
         }
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(user);
         print("login  successfully");
         DialogUtils.hideLoading(context);
         //   DialogUtils.showMessage(

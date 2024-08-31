@@ -7,6 +7,7 @@ import 'package:todo/model/task.dart';
 import 'package:todo/providers/listprovider.dart';
 
 import '../../dialog_utils.dart';
+import '../../providers/user_provider.dart';
 
 class AddTaskButtomSheet extends StatefulWidget {
   static final formKey = GlobalKey<FormState>();
@@ -136,12 +137,16 @@ class _AddTaskButtomSheetState extends State<AddTaskButtomSheet> {
 
   void addTsk() {
     if (AddTaskButtomSheet.formKey.currentState?.validate() == true) {
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
       Task task = Task(title: titel, description: disc, dateTime: selectDate);
-      FirebaseUtils.addTaskToFireStore(task).timeout(Duration(seconds: 1),
-          onTimeout: () {
+      FirebaseUtils.addTaskToFireStore(task, userProvider.currentUser!.id).then(
+        (value) {
+          print("Task  is added");
+          listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+          Navigator.pop(context);
+        },
+      ).timeout(Duration(seconds: 1), onTimeout: () {
         DialogUtils.showMessage(context: context, content: 'Task  is added');
-        print("Task  is added");
-        listProvider.getAllTasksFromFireStore();
       });
     }
   }

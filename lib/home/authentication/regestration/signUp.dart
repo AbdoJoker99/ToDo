@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
 import 'package:todo/firbase_utils.dart';
+import 'package:todo/home/home_screen.dart';
 import 'package:todo/model/my_user.dart';
 
 import '../../../dialog_utils.dart';
+import '../../../providers/user_provider.dart';
 import '../custom_text_form-field.dart';
 
 class Signup extends StatefulWidget {
@@ -136,6 +139,8 @@ class _SignupState extends State<Signup> {
             name: nameController.text);
         print("before database");
         await FirebaseUtils.adduserToFireStore(myUser);
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(myUser);
         print("after database");
         DialogUtils.hideLoading(context);
         DialogUtils.showMessage(
@@ -144,7 +149,7 @@ class _SignupState extends State<Signup> {
         print(credential.user?.uid ?? "");
 
         // Navigate to the next screen
-        Navigator.pushReplacementNamed(context, '/next_screen');
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');

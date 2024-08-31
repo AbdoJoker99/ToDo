@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_colors.dart';
+import 'package:todo/firbase_utils.dart';
 import 'package:todo/model/task.dart';
 
+import '../../providers/listprovider.dart';
+import '../../providers/user_provider.dart';
+
 class EditTask extends StatefulWidget {
-  const EditTask({super.key, required Task task});
+  final Task task;
+
+  const EditTask({super.key, required this.task});
 
   @override
   State<EditTask> createState() => _EditTaskState();
@@ -15,6 +22,8 @@ class _EditTaskState extends State<EditTask> {
   final titleController = TextEditingController();
   final detailsController = TextEditingController();
   var selectDate = DateTime.now();
+  late ListProvider listProvider;
+  late UserProvider userProvider;
 
   @override
   void dispose() {
@@ -25,9 +34,12 @@ class _EditTaskState extends State<EditTask> {
 
   @override
   Widget build(BuildContext context) {
+    listProvider = Provider.of<ListProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 120, // Reduced toolbar height
+        toolbarHeight: 120,
         title: Text(
           AppLocalizations.of(context)!.app_title,
           style: Theme.of(context).textTheme.bodyLarge,
@@ -39,11 +51,6 @@ class _EditTaskState extends State<EditTask> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                //textAlign: TextAlignVertical.center,
-                AppLocalizations.of(context)!.add_new_task,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
               const SizedBox(height: 20),
               Form(
                 key: formKey,
@@ -67,6 +74,9 @@ class _EditTaskState extends State<EditTask> {
                           }
                           return null;
                         },
+                        onChanged: (value) {
+                          widget.task.title = value;
+                        },
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -86,6 +96,9 @@ class _EditTaskState extends State<EditTask> {
                             return "Please enter details description ";
                           }
                           return null;
+                        },
+                        onChanged: (value) {
+                          widget.task.description = value;
                         },
                       ),
                       const SizedBox(height: 20),
@@ -123,7 +136,10 @@ class _EditTaskState extends State<EditTask> {
                         ),
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            // Save task
+                            FirebaseUtils.updateTask(
+                                widget.task, userProvider.currentUser!.id);
+                            listProvider.getAllTasksFromFireStore(
+                                userProvider.currentUser!.id);
                           }
                         },
                         child: Text(
@@ -153,6 +169,7 @@ class _EditTaskState extends State<EditTask> {
     );
     if (chosenDate != null) {
       selectDate = chosenDate;
+      widget.task.dateTime = chosenDate;
     }
     selectDate = chosenDate ?? selectDate;
     setState(() {});
