@@ -13,92 +13,78 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final appLocalizations = AppLocalizations.of(context)!;
+
     return Container(
-      margin: EdgeInsets.all(30),
+      margin: const EdgeInsets.all(30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            AppLocalizations.of(context)!.language,
+            appLocalizations.language,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          SizedBox(
-            height: 15,
+          const SizedBox(height: 15),
+          _buildSettingButton(
+            context,
+            appLocalizations.english,
+            () => showLanguageButtonShape(context),
           ),
-          Container(
-            padding: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.whiteColor,
-                border: Border.all(color: AppColors.primaryColor)),
-            child: InkWell(
-              onTap: () {
-                showLanguageButtomShape(context);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.english,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Icon(Icons.arrow_drop_down)
-                ],
-              ),
-            ),
+          const SizedBox(height: 15),
+          Text(
+            appLocalizations.mode,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-          SizedBox(
-            height: 15,
+          const SizedBox(height: 15),
+          _buildSettingButton(
+            context,
+            appLocalizations.light,
+            () => showThemeButtonShape(context),
           ),
-          Container(
-              margin: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.mode,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.whiteColor,
-                        border: Border.all(color: AppColors.primaryColor)),
-                    child: InkWell(
-                      onTap: () {
-                        showThemeButtomShape(context);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.light,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          Icon(Icons.arrow_drop_down),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )),
         ],
       ),
     );
   }
 
-  void showLanguageButtomShape(BuildContext context) {
-    showModalBottomSheet(
-        context: context, builder: (context) => LanguageButtomShape());
+  Widget _buildSettingButton(
+    BuildContext context,
+    String text,
+    VoidCallback onTap,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: AppColors.whiteColor,
+        border: Border.all(color: AppColors.primaryColor),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              text,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const Icon(Icons.arrow_drop_down),
+          ],
+        ),
+      ),
+    );
   }
 
-  void showThemeButtomShape(BuildContext context) {
+  void showLanguageButtonShape(BuildContext context) {
     showModalBottomSheet(
-        context: context, builder: (context) => ThemeButtomShape());
+      context: context,
+      builder: (context) => LanguageButtonShape(),
+    );
+  }
+
+  void showThemeButtonShape(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => ThemeButtonShape(),
+    );
   }
 }

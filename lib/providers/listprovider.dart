@@ -23,6 +23,11 @@ class ListProvider extends ChangeNotifier {
       return false;
     }).toList();
 
+    /// Sorting
+    tasksList.sort((task1, task2) {
+      return task1.dateTime.compareTo(task2.dateTime);
+    });
+
     notifyListeners();
   }
 

@@ -14,22 +14,29 @@ class Login extends StatefulWidget {
   static const String routeName = 'login_screen';
 
   @override
-  _loginState createState() => _loginState();
+  _LoginState createState() => _LoginState();
 }
 
-class _loginState extends State<Login> {
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("login"),
+        title: const Text("Login"),
         centerTitle: true,
-      ), // AppBar
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -38,32 +45,31 @@ class _loginState extends State<Login> {
               child: Column(
                 children: [
                   CustomTextFormField(
-                    label: 'email',
-                    controller: emailController,
+                    label: 'Email',
+                    controller: _emailController,
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
-                        return "please enter  your email";
+                        return "Please enter your email";
                       }
                       final bool emailValid = RegExp(
                               r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_^{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                           .hasMatch(text);
                       if (!emailValid) {
-                        return " please enter valid email";
+                        return "Please enter a valid email";
                       }
                       return null;
                     },
                     obscureText: false,
                   ),
                   CustomTextFormField(
-                    // CustomTextFormField
-                    label: 'password',
-                    controller: passwordController,
+                    label: 'Password',
+                    controller: _passwordController,
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
-                        return "please enter  your password";
+                        return "Please enter your password";
                       }
                       if (text.length < 6) {
-                        return " password  can not be less than 6 characters";
+                        return "Password cannot be less than 6 characters";
                       }
                       return null;
                     },
@@ -71,20 +77,16 @@ class _loginState extends State<Login> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Expanded(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blue)),
-                        onPressed: () {
-                          login();
-                        },
-                        child: Text(
-                          'Login',
-                          style: TextStyle(color: AppColors.whiteColor),
-                        ),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.blue)),
+                      onPressed: login,
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(color: AppColors.whiteColor),
                       ),
-                    ), // Elevated
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -92,51 +94,53 @@ class _loginState extends State<Login> {
                       onPressed: () {
                         Navigator.of(context).pushNamed(Signup.routeName);
                       },
-                      child: Text(
+                      child: const Text(
                         'Or Create Account',
                         style: TextStyle(fontSize: 20),
-                      ), // Text, TextButton
+                      ),
                     ),
-                  ), // Padding
+                  ),
                 ],
               ),
             ),
           ],
         ),
-      ), // Column
-    ); // Scaffold
+      ),
+    );
   }
 
   void login() async {
     if (_formKey.currentState!.validate()) {
-      DialogUtils.showLoading(context, "loading...");
-      //TODO: Add your logic here
+      DialogUtils.showLoading(context, "Loading...");
       try {
-        final credential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-        var user = await FirebaseUtils.readUserFromFirestore(
-            credential.user?.uid ?? "");
+        final credential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        final user = await FirebaseUtils.readUserFromFirestore(
+          credential.user?.uid ?? "",
+        );
         if (user == null) {
           return;
         }
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.updateUser(user);
-        print("login  successfully");
+        print("Login successful");
         DialogUtils.hideLoading(context);
-        //   DialogUtils.showMessage(
-        // context: context, content: 'login Successfully!');
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-        print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           DialogUtils.showMessage(
-              context: context, content: 'No user found for that email.');
+            context: context,
+            content: 'No user found for that email.',
+          );
           print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
           DialogUtils.showMessage(
-              context: context,
-              content: 'Wrong password provided for that user.');
+            context: context,
+            content: 'Wrong password provided for that user.',
+          );
           print('Wrong password provided for that user.');
         }
       }

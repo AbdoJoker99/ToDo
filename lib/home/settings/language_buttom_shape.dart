@@ -5,54 +5,48 @@ import 'package:provider/provider.dart';
 import '../../app_colors.dart';
 import '../../providers/app_config_provider.dart';
 
-class LanguageButtomShape extends StatefulWidget {
-  const LanguageButtomShape({super.key});
+class LanguageButtonShape extends StatefulWidget {
+  const LanguageButtonShape({super.key});
 
   @override
-  State<LanguageButtomShape> createState() => _LanguageButtomShapeState();
+  State<LanguageButtonShape> createState() => _LanguageButtonShapeState();
 }
 
-class _LanguageButtomShapeState extends State<LanguageButtomShape> {
+class _LanguageButtonShapeState extends State<LanguageButtonShape> {
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+    final provider = Provider.of<AppConfigProvider>(context);
+    final appLocalizations = AppLocalizations.of(context)!;
+
     return Container(
-        margin: EdgeInsets.all(10),
-        //padding: EdgeInsets.all(35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () {
-                  provider.changeLanguage("en");
-                },
-                child: provider.appLanguage == 'en'
-                    ? getSelectedItemWidget(
-                        AppLocalizations.of(context)!.english)
-                    : getUnSelectedItemWidget(
-                        AppLocalizations.of(context)!.english),
-              ),
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () => provider.changeAppLanguage("en"),
+              child: provider.appLanguage == 'en'
+                  ? _getSelectedItemWidget(appLocalizations.english)
+                  : _getUnSelectedItemWidget(appLocalizations.english),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () {
-                  provider.changeLanguage("ar");
-                },
-                child: provider.appLanguage == 'ar'
-                    ? getSelectedItemWidget(
-                        AppLocalizations.of(context)!.arabic)
-                    : getUnSelectedItemWidget(
-                        AppLocalizations.of(context)!.arabic),
-              ),
-            )
-          ],
-        ));
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () => provider.changeAppLanguage("ar"),
+              child: provider.appLanguage == 'ar'
+                  ? _getSelectedItemWidget(appLocalizations.arabic)
+                  : _getUnSelectedItemWidget(appLocalizations.arabic),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget getSelectedItemWidget(String text) {
+  Widget _getSelectedItemWidget(String text) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -70,7 +64,7 @@ class _LanguageButtomShapeState extends State<LanguageButtomShape> {
     );
   }
 
-  Widget getUnSelectedItemWidget(String text) {
+  Widget _getUnSelectedItemWidget(String text) {
     return Text(text, style: Theme.of(context).textTheme.bodySmall);
   }
 }
