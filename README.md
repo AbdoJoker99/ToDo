@@ -72,15 +72,10 @@ lib/
 ## Localization
 
 This app supports multiple languages. To add support for a new language, follow these steps:
-
-1. Create a JSON file for the new language in `lib/localization/` (e.g., `es.json` for Spanish).
-2. Add the new locale in the `supportedLocales` array in `main.dart`:
-
 ```dart
-supportedLocales: [
-  const Locale('en', 'US'),
-  const Locale('es', 'ES'), // Add new language here
-],
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dar
 ```
 
 ## Theming
