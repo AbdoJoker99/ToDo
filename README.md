@@ -1,56 +1,64 @@
 # Flutter To-Do App
 
-## Overview
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Folder Structure](#folder-structure)
+- [Localization](#localization)
+- [Theming](#theming)
+- [Contributors](#contributors)
 
-This is a Flutter To-Do application that helps users manage daily tasks efficiently. It includes multi-language localization and theming support, allowing users to toggle between light and dark modes. The app is built using Flutter and Dart, ensuring cross-platform compatibility for Android and iOS.
+## Overview
+This is a Flutter-based To-Do application that helps users efficiently manage daily tasks. The app supports multi-language localization and theming, allowing users to toggle between light and dark modes. It is cross-platform and works on both Android and iOS devices.
 
 ## Features
-
 - **Task Management**: Add, edit, delete, and mark tasks as completed.
-- **Localization**: Multi-language support for global usage.
-- **Theming**: Light and dark themes available.
-- **Task Prioritization**: Set high, medium, or low priorities for tasks.
-- **Reminders**: Receive notifications for upcoming tasks.
-- **Categories**: Organize tasks under different categories.
+- **Task Prioritization**: Set task priorities (High, Medium, Low).
+- **Reminders**: Notifications for upcoming tasks.
+- **Categories**: Organize tasks by categories.
+- **Localization**: Multi-language support for global accessibility.
+- **Theming**: Switch between light and dark modes.
 
 ## Screenshots
-
-Add your app screenshots here.
+Include your app screenshots here.
 
 ## Getting Started
 
 ### Prerequisites
-
-Before running this project, ensure you have the following installed:
-
-- [Flutter SDK](https://flutter.dev/docs/get-started/install)
-- [Dart SDK](https://dart.dev/get-dart)
-- [Android Studio](https://developer.android.com/studio) or [Visual Studio Code](https://code.visualstudio.com/)
+Ensure you have the following installed before running this project:
+- Flutter SDK
+- Dart SDK
+- Android Studio or VS Code
 
 ### Installation
-
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/yourusername/flutter_todo_app.git
-Navigate to the project directory:
+# Flutter Task Management App
 
-bash
-Copy code
-cd flutter_todo_app
-Fetch the dependencies:
+A task management app built with Flutter that supports multiple languages, custom themes, and a structured directory layout for scalability and maintainability.
 
-bash
-Copy code
+## Getting Started
+
+To get the project dependencies and run the app on your device or emulator, use the following commands:
+
+```bash
+# Fetch project dependencies
 flutter pub get
-Run the app:
 
-bash
-Copy code
+# Run the app
 flutter run
-Folder Structure
-bash
-Copy code
+```
+
+## Folder Structure
+
+The project follows a structured directory layout to ensure maintainability and scalability:
+
+```bash
 lib/
   ├── main.dart                # Entry point of the app
   ├── screens/                 # App screens (Home, AddTask, etc.)
@@ -59,10 +67,26 @@ lib/
   ├── localization/            # Localization resources
   ├── theme/                   # Light and dark theme files
   └── utils/                   # Utility functions (e.g., date formatting)
-Localization
-To add more languages, follow these steps:
+```
 
-Create a new language file in lib/localization/ (e.g., en.json for English).
-Add language support in the app by updating the supportedLocales in main.dart.
-Theming
-The app supports light and dark themes. You can modify the themes in lib/theme/ by editing the light_theme.dart and dark_theme.dart files.
+## Localization
+
+This app supports multiple languages. To add support for a new language, follow these steps:
+
+1. Create a JSON file for the new language in `lib/localization/` (e.g., `es.json` for Spanish).
+2. Add the new locale in the `supportedLocales` array in `main.dart`:
+
+```dart
+supportedLocales: [
+  const Locale('en', 'US'),
+  const Locale('es', 'ES'), // Add new language here
+],
+```
+
+## Theming
+
+The app supports both light and dark themes. You can customize the themes by editing the `light_theme.dart` and `dark_theme.dart` files located in the `lib/theme/` directory.
+
+## Contributors
+
+- **Abdelrahman Wael** - [GitHub Profile](https://github.com/chessjoker27)
