@@ -89,4 +89,4 @@ The app supports both light and dark themes. You can customize the themes by edi
 
 ## Contributors
 
-- **Abdelrahman Wael** - [GitHub Profile](https://github.com/chessjoker27)
+- **Abdelrahman Wael** - [GitHub Profile](https://github.com/AbdoJoker99)
