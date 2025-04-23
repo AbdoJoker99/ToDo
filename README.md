@@ -13,7 +13,7 @@
 - [Contributors](#contributors)
 
 ## Overview
-This is a Flutter-based To-Do application that helps users efficiently manage daily tasks. The app supports multi-language localization and theming, allowing users to toggle between light and dark modes. It is cross-platform and works on both Android and iOS devices.
+This is a Flutter-based To-Do application that helps users efficiently manage daily tasks. The app supports multi-language localization and theming, allowing users to toggle between light and dark modes. It is cross-platform and works on both Android and iOS devices
 
 ## Features
 - **Task Management**: Add, edit, delete, and mark tasks as completed.
